@@ -7,10 +7,10 @@ const ATTRS = {
 const ATTRS_BOOL = ["autofocus", "autoplay", "checked", "compact", "controls", "declare", "defaultChecked", "defer", "disabled", "ismap", "loop", "multiple", "noresize", "noshade", "nowrap", "readOnly", "selected"];
 
 
-var attr = {
-    sets: function(element, attrs) {
-        for (var name in attrs) {
-            attr.set(element, name, attrs[name]);
+var attrs = {
+    sets: function(element, attributes) {
+        for (var name in attributes) {
+            attrs.set(element, name, attributes[name]);
         }
     },
     set: function(element, name, value) {
@@ -26,7 +26,7 @@ var attr = {
                 element.className = unique(value.split(' ')).join(' ');
                 break;
             case 'css':
-                $attrs.style.set(name, value);
+                element.style.set(name, value);
                 break;
             default:
                 if (name in ATTRS) {
@@ -39,24 +39,6 @@ var attr = {
     }
 
 };
-var style = {
-    set: function(element, name, value) {
-        name = name === 'float' ? 'cssFloat' : camelCase(name);
-        element.style[name] = value;
-    },
-    get: function(element, name) {
-        return name = name === 'float' ? 'cssFloat' : camelCase(name);
-    },
-    sets: function(element, styles) {
-        for (let name in styles) {
-            style.set(element, name, styles[name]);
-        }
-    }
-};
-
-function camelCase(){
-
-}
 
 function unique(tab){
     var tmp = [],
@@ -70,7 +52,4 @@ function unique(tab){
     return tmp;
         
 }
-export {
-    attr,
-    style
-};
+export default attrs;

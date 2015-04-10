@@ -1,18 +1,19 @@
 import Binder from './binder';
 import Events from './events';
 import cookie from './cookie';
-import * as $attrs from './attrs';
+import attrs from './attrs';
+import styles from './styles';
 import {uid} from './utils';
 
 //html tag name finder
 const TAG_RE = /^<(\w+)\/?>$/;
 
-export default function sdom(name, attrs, context) {
-    attrs = attrs || {};
+export default function sdom(name, attributes, context) {
+    attributes = attributes || {};
     if (context === undefined || typeof context.createElement !== 'function') {
         context = document;
     }
-    var $dom = null;
+    var element = null;
     if (typeof name === 'string') {
         name = name.trim();
         if (name.length > 1) {
@@ -20,29 +21,29 @@ export default function sdom(name, attrs, context) {
                 if (name.length > 2) {
                     var m = TAG_RE.exec(name);
                     if (m) {
-                        $dom = context.createElement(m[1]);
+                        element = context.createElement(m[1]);
                     } else {
                         var fragment = context.createElement('div');
                         fragment.innerHTML = name;
-                        $dom = fragment.firstChild;
+                        element = fragment.firstChild;
                     }
                 }
             } else {
-                $dom = context.createElement(name);
+                element = context.createElement(name);
             }
-            if ($dom !== null) {
-                if (attrs) {
-                    $attrs.attr.sets($dom, attrs);
+            if (element !== null) {
+                if (attributes) {
+                    attrs.sets(element, attributes);
                 }
             }
         }
     }
-    return $dom;
+    return element;
 }
 
 sdom.uid = uid;
-sdom.style = $attrs.style;
-sdom.attr = $attrs.attr;
+sdom.style = styles;
+sdom.attr = attrs;
 sdom.cookie = cookie;
 
 sdom.binder = function(config, element){
