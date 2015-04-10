@@ -11,9 +11,9 @@
 ```
 ### JS
 ```javascript
-import create from 'sdom';
+import sdom from 'sdom';
 
-var handler = create({
+var handler = sdom.binder({
     title:'h1@text',
     user:{
         id:'#user@dataset:uid',
