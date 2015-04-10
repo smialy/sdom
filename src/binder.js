@@ -1,33 +1,24 @@
-import {RootNode, Node, MultipleNode, nodeFactory} from './node';
+import {RootNode, Node, MultipleNode, walker} from './nodes';
+import * as utils from './utils';
 
-function walk(parent, config, element){
-    var node;
-    Object.keys(config).forEach(name => {
-        if(typeof config[name] === 'string'){ 
-        node = nodeFactory(name, element, config[name]);
-        parent.addChild(node);
-    }else if(Array.isArray(config[name])){
-        var multiple = new MultipleNode('multiple', name);
-        config[name].forEach(sub => {
-            node = nodeFactory(name, element, sub);
-            multiple.addChild(node);
-        });
-        parent.addChild(multiple);
-    }else{
-        node = new Node('node', name);
-        walk(node, config[name], element);
-        parent.addChild(node);
-    }
-   });
-}
-   
+var binders = {};   
 
 export default class Binder{
+
+    static create(config, element){
+        var uid = utils.uid(element);
+        if(!(uid in binders)){
+            binders[uid] = new Binder(config, element);
+        }
+        return binders[uid];
+    }
+
     constructor(config, element){
         this._map = {};
         this.root = new RootNode(element);
-        walk(this.root, config, element);
+        walker(this.root, config, element);
     }
+    
     update(data, value = null){
         if(value !== null){
             var names = data.split('.');
@@ -47,6 +38,7 @@ export default class Binder{
 
     dispose(){
         this.root.dispose();
+        delete binders[utils.uid(element)];
     }
 
 }

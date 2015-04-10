@@ -1,11 +1,14 @@
-import create from '../src/index';
+import Binder from '../src/binder';
 import {user} from './helper';
 
 test('imports', function(){
-    ok(typeof create === 'function'); 
+    ok(typeof Binder === 'function'); 
 });
+function create(options, dom){
+    return new Binder(options, dom);
+}
 var handler; 
-module("sdom", {
+module("sdom.binder(config, element)", {
     setup: function() {
         handler = user.setup();
     },
@@ -18,7 +21,6 @@ test('empty', function(){
     var sdom = create({}, document.body);
     ok(typeof sdom.update === 'function');
 });
-
 
 test('update plain', function(){
     var sdom = create({

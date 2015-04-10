@@ -1,4 +1,3 @@
-
 export class Node{
     constructor(type, name, element, options=null){
       
@@ -37,19 +36,6 @@ export class Node{
         this.element = null;
         this._childs = [];
     }
-}
-export class RootNode extends Node{
-    constructor(element){
-        super('root', 'root', element);
-    }
-}
-
-export class MultipleNode extends Node{
-    update(data){
-        this._childs.forEach(node => {
-            node.update(data);
-        });
-    }   
 }
 
 class LeafNode extends Node{
@@ -124,6 +110,41 @@ class ClassNode extends LeafNode{
     }
 }
 
+export class RootNode extends Node{
+    constructor(element){
+        super('root', 'root', element);
+    }
+}
+
+export class MultipleNode extends Node{
+    update(data){
+        this._childs.forEach(node => {
+            node.update(data);
+        });
+    }   
+}
+
+export function walker(parent, config, element){
+    var node;
+    Object.keys(config).forEach(name => {
+        if(typeof config[name] === 'string'){ 
+            node = nodeFactory(name, element, config[name]);
+            parent.addChild(node);
+        }else if(Array.isArray(config[name])){
+            var multiple = new MultipleNode('multiple', name);
+            config[name].forEach(sub => {
+                node = nodeFactory(name, element, sub);
+                multiple.addChild(node);
+            });
+            parent.addChild(multiple);
+        }else{
+            node = new Node('node', name);
+            walker(node, config[name], element);
+            parent.addChild(node);
+        }
+    });
+}
+
 function parseConfig(text){
    var [selector, rest] = text.split('@');
    if(!rest){
@@ -138,7 +159,7 @@ function parseConfig(text){
    };
 }
 
-var nodes = {
+const NODES = {
     text:function(name, element){
         return new TextNode(name, element);
     },
@@ -156,13 +177,14 @@ var nodes = {
     }
 };
 
-export function nodeFactory(name, element, config){
+
+function nodeFactory(name, element, config){
     if(typeof config === 'string'){
         config = parseConfig(config);
     }
-    if(nodes[config.type]){
+    if(NODES[config.type]){
         var dom = element.querySelector(config.selector);
-        return nodes[config.type](name, dom, config.options);
+        return NODES[config.type](name, dom, config.options);
     }
     return new TextNode('name', element);
 
