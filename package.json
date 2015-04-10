@@ -1,7 +1,7 @@
 {
   "name": "sdom",
-  "version": "0.0.1",
-  "description": "sDom - Quick Dom Binder",
+  "version": "0.1.0",
+  "description": "sdom - Dom Helper",
   "keywords": [
     "www"
   ],
