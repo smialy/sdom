@@ -1,26 +1,27 @@
-import sdom from '../src/dom'; 
+import create from '../src/create'; 
+import {uid} from '../src/utils'; 
 
-module('sdom(element)');
+module('create(element)');
 
 test('incorect name', function() {
     expect(10);
 
-    equal(sdom(), null, 'sdom() === null');
-    equal(sdom(undefined), null, 'sdom(undefined) === null');
-    equal(sdom(null), null, 'sdom(null) === null');
-    equal(sdom(''), null, 'sdom("") === null');
-    equal(sdom('<>'), null, 'sdom("<>") === null');
+    equal(create(), null, 'create() === null');
+    equal(create(undefined), null, 'create(undefined) === null');
+    equal(create(null), null, 'create(null) === null');
+    equal(create(''), null, 'create("") === null');
+    equal(create('<>'), null, 'create("<>") === null');
 
-    var $el = sdom('div');
+    var $el = create('div');
     equal($el.nodeName.toLowerCase(), 'div');
 
-    $el = sdom('<div>');
+    $el = create('<div>');
     equal($el.nodeName.toLowerCase(), 'div');
 
-    $el = sdom('<span>');
+    $el = create('<span>');
     equal($el.nodeName.toLowerCase(), 'span');
 
-    $el = sdom('<div>test</div>');
+    $el = create('<div>test</div>');
     equal($el.nodeName.toLowerCase(), 'div');
     equal($el.innerHTML, 'test');
 });
@@ -28,39 +29,39 @@ test('incorect name', function() {
 test('create directly from <html>', function() {
     expect(5);
 
-    var $el = sdom('<div id="element-id" class="element-class" data-test="element-dataset">');
+    var $el = create('<div id="element-id" class="element-class" data-test="element-dataset">');
     equal($el.id, 'element-id', 'HTMLElement.id');
     equal($el.className, 'element-class', 'HTMLElement.className');
     equal($el.classList.contains('element-class'), true, 'HTMLElement.classList');
 
-    ok(sdom('<link rel="stylesheet"/>'), 'Creating a link');
-    ok(sdom('<option>test</option>'), 'Creating a link');
+    ok(create('<link rel="stylesheet"/>'), 'Creating a link');
+    ok(create('<option>test</option>'), 'Creating a link');
 });
 
 test('set attributes', function() {
     var $div;
 
-    $div = sdom('div', {
+    $div = create('div', {
         id: 'test-id'
     });
     equal($div.id, 'test-id', 'Element[id]');
 
-    $div = sdom('div', {
+    $div = create('div', {
         for: 'test-for'
     });
     equal($div.htmlFor, 'test-for', 'Element[for]');
 
-    $div = sdom('div', {
+    $div = create('div', {
         style: 'width:100%'
     });
     equal($div.cssText, 'width:100%', 'Element[style]');
 
-    $div = sdom('input', {
+    $div = create('input', {
         value: '1'
     });
     equal($div.value, '1', 'InputElement[value]');
 
-    $div = sdom('div', {
+    $div = create('div', {
         class: 'test-class'
     });
     equal($div.className, 'test-class', 'Element[class]');
@@ -68,12 +69,12 @@ test('set attributes', function() {
 });
 
 test('create input text/password', function() {
-    var $username = sdom('input', {
+    var $username = create('input', {
         type: 'text',
         name: 'name',
         value: 'username'
     });
-    var $password = sdom('input', {
+    var $password = create('input', {
         type: 'password',
         name: 'password',
         value: 'password'
@@ -89,15 +90,15 @@ test('create input text/password', function() {
 });
 
 test('create checkbox input', function() {
-    var $c1 = sdom('input', {
+    var $c1 = create('input', {
         type: 'checkbox',
         checked: false
     });
-    var $c2 = sdom('input', {
+    var $c2 = create('input', {
         type: 'checkbox',
         checked: true
     });
-    var $c3 = sdom('input', {
+    var $c3 = create('input', {
         type: 'checkbox',
         checked: 'checked'
     });
@@ -107,56 +108,56 @@ test('create checkbox input', function() {
     ok($c3.checked);
 });
 test('classList', function() {
-    var $el = sdom('div', {
+    var $el = create('div', {
         class: ''
     });
 
     equal($el.className, '', '{class:""}');
 
-    $el = sdom('div', {
+    $el = create('div', {
         class: 'foo'
     });
     equal($el.className, 'foo', '{class:"foo"}');
 
-    $el = sdom('div', {
+    $el = create('div', {
         class: ' foo '
     });
     equal($el.className, 'foo', '{class:" foo "}');
 
-    $el = sdom('div', {
+    $el = create('div', {
         class: 'foo bar'
     });
     equal($el.className, 'foo bar', '{class:"foo bar"}');
 
-    $el = sdom('div', {
+    $el = create('div', {
         class: ' foo bar '
     });
     equal($el.className, 'foo bar', '{class:" foo bar "}');
 
-    $el = sdom('div', {
+    $el = create('div', {
         class: 'foo foo'
     });
     equal($el.className, 'foo', '{class:"foo foo"}');
 
-    $el = sdom('div', {
+    $el = create('div', {
         class: 'foo foo'
     });
     equal($el.className, 'foo', '{class:"foo foo"}');
 
 });
 
-module('sdom.uid(HTMLElement)');
+module('uid(HTMLElement)');
 
 test('retrieve uid for html element', function() {
-    var $div = sdom('div');
-    ok(sdom.uid($div));
+    var $div = create('div');
+    ok(uid($div));
 });
 test('equal uid for one element', function() {
-    var $div = sdom('div');
-    ok(sdom.uid($div) === sdom.uid($div));
+    var $div = create('div');
+    ok(uid($div) === uid($div));
 });
 test('difrent uid for difrent elements', function() {
-    var $div1 = sdom('div');
-    var $div2 = sdom('div');
-    ok(sdom.uid($div1) !== sdom.uid($div2));
+    var $div1 = create('div');
+    var $div2 = create('div');
+    ok(uid($div1) !== uid($div2));
 });

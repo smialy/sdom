@@ -1,27 +1,27 @@
 
 
-var cookie = {
+var cookies = {
     document: window.document,
     set:function(name, value, options){
-        cookies(name, options).set(value);
+        cookie(name, options).set(value);
     },
     get: function(name, options) {
-        return cookies(name, options).get();
+        return cookie(name, options).get();
     },
     remove: function(name, options) {
-        return cookies(name, options).remove();
+        return cookie(name, options).remove();
     }
 };
 
-export default cookie;
+export default cookies;
 
-function cookies(name, options) {
+function cookie(name, options) {
     options = Object.assign({}, {
         path: '/',
         domain: false,
         expires: false,
         secure: false,
-        document: cookie.document,
+        document: cookies.document,
         encode: true
     }, options || {});
     return {
@@ -52,7 +52,7 @@ function cookies(name, options) {
             return value ? decodeURIComponent(value[1]) : null;
         },
         remove: function() {
-            cookies(name, Object.assign({}, options, {
+            cookie(name, Object.assign({}, options, {
                 expires: -1
             })).set();
         }

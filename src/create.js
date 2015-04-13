@@ -1,14 +1,10 @@
-import Binder from './binder';
-import Events from './events';
-import cookie from './cookie';
 import attrs from './attrs';
-import styles from './styles';
-import {uid} from './utils';
+
 
 //html tag name finder
 const TAG_RE = /^<(\w+)\/?>$/;
 
-export default function sdom(name, attributes, context) {
+export default function create(name, attributes, context) {
     attributes = attributes || {};
     if (context === undefined || typeof context.createElement !== 'function') {
         context = document;
@@ -40,17 +36,3 @@ export default function sdom(name, attributes, context) {
     }
     return element;
 }
-
-sdom.uid = uid;
-sdom.style = styles;
-sdom.attr = attrs;
-sdom.cookie = cookie;
-
-sdom.binder = function(config, element){
-    return Binder.create(config, element);
-};
-
-sdom.event = function(element){
-    return Events.create(element);
-};
-

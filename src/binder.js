@@ -1,12 +1,12 @@
 import {RootNode, Node, MultipleNode, walker} from './nodes';
-import * as utils from './utils';
+import * as $utils from './utils';
 
 var binders = {};   
 
 export default class Binder{
 
     static create(config, element){
-        var uid = utils.uid(element);
+        var uid = $utils.uid(element);
         if(!(uid in binders)){
             binders[uid] = new Binder(config, element);
         }

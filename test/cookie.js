@@ -1,68 +1,68 @@
-import sdom from '../src/index'; 
+import cookies from '../src/cookies'; 
 
-module('sdom.cookie()', {
+module('cookie()', {
     setup: function() {
         $document.reset();
-        sdom.cookie.document = $document;
+        cookies.document = $document;
     },
     teardown: function() {
-        sdom.cookie.document = document;
+        cookies.document = document;
     }
 });
 
-test('cookie.set()', function() {
-    sdom.cookie.set('test', 'value');
+test('cookies.set()', function() {
+    cookies.set('test', 'value');
     equal($document.cookie, 'test=value; path=/');
 });
 
-test('cookie.set() - empty value', function() {
-    sdom.cookie.set('name');
+test('cookies.set() - empty value', function() {
+    cookies.set('name');
     equal($document.cookie, 'name=; path=/');
 });
 
-test('cookie.get() - empty value', function() {
-    equal(sdom.cookie.get(), null);
+test('cookies.get() - empty value', function() {
+    equal(cookies.get(), null);
 });
 
-test('cookie.get()', function() {
+test('cookies.get()', function() {
     $document.cookie = 'test=value';
-    equal(sdom.cookie.get('test'), 'value');
+    equal(cookies.get('test'), 'value');
 });
 
-test('cookie.remove()', function() {
+test('cookies.remove()', function() {
     document.cookie = 'test=value';
-    sdom.cookie.remove();
+    cookies.remove();
     ok($document.$cookie.$expires.getTime() < new Date().getTime());
 });
 
 test('cookie path', function() {
-    sdom.cookie.set('name', 'path', {
+    cookies.set('name', 'path', {
         path: '/test'
     });
     equal($document.cookie, 'name=path; path=/test');
 });
 
 test('cookie secure', function() {
-    sdom.cookie.set('name', '', {
+    cookies.set('name', '', {
         secure: true
     });
     equal($document.cookie, 'name=; path=/; secure');
 });
 
 test('cookie domain', function() {
-    sdom.cookie.set('name', 'secure', {
+    cookies.set('name', 'secure', {
         domain: 'domain.pl'
     });
     equal($document.cookie, 'name=secure; domain=domain.pl; path=/');
 });
 
 test('cookie default encode', function() {
-    sdom.cookie.set('name', '+');
+    cookies.set('name', '+');
     equal($document.cookie, 'name=%2B; path=/');
 });
 
 test('cookie disable encode', function() {
-    sdom.cookie.set('name', '+', {
+    cookies.set('name', '+', {
         encode: false
     });
     equal($document.cookie, 'name=+; path=/');
