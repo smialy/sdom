@@ -1,7 +1,5 @@
 System.register([], function (_export) {
-    var ATTRS, ATTRS_BOOL, attr, style;
-
-    function camelCase() {}
+    var ATTRS, ATTRS_BOOL, attrs;
 
     function unique(tab) {
         var tmp = [],
@@ -27,10 +25,10 @@ System.register([], function (_export) {
                 style: "cssText"
             };
             ATTRS_BOOL = ["autofocus", "autoplay", "checked", "compact", "controls", "declare", "defaultChecked", "defer", "disabled", "ismap", "loop", "multiple", "noresize", "noshade", "nowrap", "readOnly", "selected"];
-            attr = {
-                sets: function sets(element, attrs) {
-                    for (var name in attrs) {
-                        attr.set(element, name, attrs[name]);
+            attrs = {
+                sets: function sets(element, attributes) {
+                    for (var name in attributes) {
+                        attrs.set(element, name, attributes[name]);
                     }
                 },
                 set: function set(element, name, value) {
@@ -46,7 +44,7 @@ System.register([], function (_export) {
                             element.className = unique(value.split(" ")).join(" ");
                             break;
                         case "css":
-                            $attrs.style.set(name, value);
+                            element.style.set(name, value);
                             break;
                         default:
                             if (name in ATTRS) {
@@ -59,24 +57,8 @@ System.register([], function (_export) {
                 }
 
             };
-            style = {
-                set: function set(element, name, value) {
-                    name = name === "float" ? "cssFloat" : camelCase(name);
-                    element.style[name] = value;
-                },
-                get: function get(element, name) {
-                    return name = name === "float" ? "cssFloat" : camelCase(name);
-                },
-                sets: function sets(element, styles) {
-                    for (var _name in styles) {
-                        style.set(element, _name, styles[_name]);
-                    }
-                }
-            };
 
-            _export("attr", attr);
-
-            _export("style", style);
+            _export("default", attrs);
         }
     };
 });

@@ -1,6 +1,6 @@
 {
-  "name": "sdom",
-  "version": "0.1.0",
+  "name": "sjs-dom",
+  "version": "0.2.0",
   "description": "sdom - Dom Helper",
   "keywords": [
     "www"
@@ -13,25 +13,25 @@
     "url": "http://github.com/smialy/sdom"
   },
   "devDependencies": {
-    "gulp": "^3.8.10",
-    "gulp-babel": "^4.0.0",
-    "gulp-bump": "^0.1.13",
-    "gulp-changed": "^1.1.1",
-    "gulp-jshint": "^1.9.0",
-    "gulp-plumber": "^0.6.6",
-    "gulp-sourcemaps": "^1.5.0",
-    "gulp-watch": "^4.2.0",
-    "jshint-stylish": "^1.0.0",
+    "gulp": "^3.8.11",
+    "gulp-babel": "^5.1.0",
+    "gulp-bump": "^0.3.0",
+    "gulp-changed": "^1.2.1",
+    "gulp-jshint": "^1.10.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-sourcemaps": "^1.5.1",
+    "gulp-watch": "^4.2.4",
+    "jshint-stylish": "^1.0.1",
     "del": "^1.1.1",
     "run-sequence": "^1.0.2",
     "vinyl-paths": "^1.0.0",
     "karma": "^0.12.31",
-    "karma-babel-preprocessor": "^4.0.1",
+    "karma-babel-preprocessor": "^5.0.1",
     "karma-chrome-launcher": "^0.1.7",
     "karma-firefox-launcher": "^0.1.4",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-qunit": "^0.1.4",
-    "karma-jspm": "^1.0.1"
+    "karma-jspm": "^1.1.4"
   },
   "jspm": {
     "main": "index",

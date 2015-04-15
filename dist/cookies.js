@@ -1,13 +1,13 @@
 System.register([], function (_export) {
-    var cookie;
+    var cookies;
 
-    function cookies(name, options) {
+    function cookie(name, options) {
         options = Object.assign({}, {
             path: "/",
             domain: false,
             expires: false,
             secure: false,
-            document: cookie.document,
+            document: cookies.document,
             encode: true
         }, options || {});
         return {
@@ -38,7 +38,7 @@ System.register([], function (_export) {
                 return value ? decodeURIComponent(value[1]) : null;
             },
             remove: function remove() {
-                cookies(name, Object.assign({}, options, {
+                cookie(name, Object.assign({}, options, {
                     expires: -1
                 })).set();
             }
@@ -49,20 +49,20 @@ System.register([], function (_export) {
         execute: function () {
             "use strict";
 
-            cookie = {
+            cookies = {
                 document: window.document,
                 set: function set(name, value, options) {
-                    cookies(name, options).set(value);
+                    cookie(name, options).set(value);
                 },
                 get: function get(name, options) {
-                    return cookies(name, options).get();
+                    return cookie(name, options).get();
                 },
                 remove: function remove(name, options) {
-                    return cookies(name, options).remove();
+                    return cookie(name, options).remove();
                 }
             };
 
-            _export("default", cookie);
+            _export("default", cookies);
         }
     };
 });

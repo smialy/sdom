@@ -1,5 +1,5 @@
 System.register(["./utils"], function (_export) {
-    var utils, _createClass, _classCallCheck, EVENTS_CACHE, Events, nativeTypes, listeners;
+    var utils, _createClass, _classCallCheck, EVENTS_CACHE, Events, Event, CODES, nativeTypes, listeners;
 
     function getType(type) {
         if (type === "mousewheel") {
@@ -17,7 +17,7 @@ System.register(["./utils"], function (_export) {
         var handler = nativeTypes.indexOf(type) !== -1 ? function () {
             return callback.call(bind);
         } : function (e) {
-            callback.call(bind, customEvent(e, type));
+            callback.call(bind, new Event(e, type));
         };
 
         target.addEventListener(getType(type), handler, false);
@@ -37,6 +37,68 @@ System.register(["./utils"], function (_export) {
             target.removeEventListener(getType(type), listener.handler, false);
         }
         return items;
+    }
+
+    function prepareEvent(api, e) {
+        var type = e.type;
+        if (type.indexOf("key") === 0) {
+            var code = e.which || e.keyCode;
+            if (CODES[code]) {
+                api.key = CODES[code];
+            } else if (type === "keydown" || type === "keyup") {
+                if (code > 111 && code < 124) {
+                    api.key = "f" + (code - 111);
+                } else if (code > 95 && code < 106) {
+                    api.key = code - 96;
+                } else {
+                    api.key = String.fromCharCode(code).toLowerCase();
+                }
+            }
+        } else if (type === "click" || type === "dbclick" || type.indexOf("mouse") === 0 || type === "DOMMouseScroll" || type === "wheel" || type === "contextmenu") {
+            var doc = !document.compatMode || document.compatMode === "CSS1Compat" ? document.html : document.body;
+            api.page = {
+                x: e.pageX !== null ? e.pageX : e.clientX + doc.scrollLeft,
+                y: e.pageY !== null ? e.pageY : e.clientY + doc.scrollTop
+            };
+            api.client = {
+                x: e.pageX !== null ? e.pageX - window.pageXOffset : e.clientX,
+                y: e.pageY !== null ? e.pageY - window.pageYOffset : e.clientY
+            };
+            api.isRight = e.which === 3 || e.button === 2;
+            if (type === "mouseover" || type === "mouseout") {} else if (e.type === "mousewheel" || e.type === "DOMMouseScroll" || e.type === "wheel") {
+                api.wheel = e.wheelDelta ? e.wheelDelta / 120 : -(e.detail || 0) / 3;
+                if (e.axis) {
+                    if (e.axis === e.HORIZONTAL_AXIS) {
+                        api.axis = "horizontal";
+                    } else {
+                        api.axis = "vertical";
+                    }
+                } else if (e.wheelDeltaX && e.wheelDeltaX === e.wheelDelta) {
+                    api.axis = "horizontal";
+                } else {
+                    api.axis = "vertical";
+                }
+            }
+        } else if (type.indexOf("touch") === 0 || type.indexOf("gesture") === 0) {
+            api.touch = {
+                rotation: e.rotation,
+                scale: e.scale,
+                target: e.targetTouches,
+                changed: e.changedTouches,
+                touches: e.touches };
+            var touches = e.touches;
+            if (touches && touches[0]) {
+                var touch = touches[0];
+                api.touch.page = {
+                    x: touch.pageX,
+                    y: touch.pageY
+                };
+                api.touch.client = {
+                    x: touch.clientX,
+                    y: touch.clientY
+                };
+            }
+        }
     }
 
     return {
@@ -60,13 +122,13 @@ System.register(["./utils"], function (_export) {
                 }
 
                 _createClass(Events, {
-                    on: {
-                        value: function on(type, callback, bind) {
+                    add: {
+                        value: function add(type, callback, bind) {
                             addEvent(this.element, type, callback, bind);
                         }
                     },
-                    ons: {
-                        value: function ons(items) {
+                    addAll: {
+                        value: function addAll(items) {
                             for (var _name in items) {
                                 addEvent(this.element, _name, items[_name]);
                             }
@@ -81,13 +143,13 @@ System.register(["./utils"], function (_export) {
                             return handler;
                         }
                     },
-                    off: {
-                        value: function off(type, callback, bind) {
+                    remove: {
+                        value: function remove(type, callback, bind) {
                             removeEvent(this.element, type, callback, bind);
                         }
                     },
-                    offs: {
-                        value: function offs(types) {
+                    removeAll: {
+                        value: function removeAll(types) {
                             var items = [];
                             var uid = utils.uid(this.element);
                             if (typeof types === "undefined") {
@@ -107,7 +169,7 @@ System.register(["./utils"], function (_export) {
                     },
                     dispose: {
                         value: function dispose() {
-                            this.offs();
+                            this.removeAll();
                             this.element = null;
                             delete EVENTS_CACHE[utils.uid(this.element)];
                         }
@@ -117,7 +179,7 @@ System.register(["./utils"], function (_export) {
                         value: function create(element) {
                             var uid = utils.uid(element);
                             if (!(uid in EVENTS_CACHE)) {
-                                EVENTS_CACHE[uid] = new Binder(config, element);
+                                EVENTS_CACHE[uid] = new Events(element);
                             }
                             return EVENTS_CACHE[uid];
                         }
@@ -129,6 +191,71 @@ System.register(["./utils"], function (_export) {
 
             _export("default", Events);
 
+            Event = (function () {
+                function Event(e, ctype) {
+                    _classCallCheck(this, Event);
+
+                    var target = e.target;
+                    while (target && target.nodeType === 3) {
+                        target = target.parentNode;
+                    }
+
+                    this.e = e;
+                    this.type = ctype || e.type;
+                    this.shift = e.shiftKey;
+                    this.control = e.ctrlKey;
+                    this.alt = e.altKey;
+                    this.meta = e.metaKey;
+                    this.target = e.target;
+                    this.related = e.relatedTarget;
+                    this.page = null;
+                    this.client = null;
+                    prepareEvent(this, e);
+                    Object.freeze(this);
+                }
+
+                _createClass(Event, {
+                    preventDefault: {
+                        value: function preventDefault() {
+                            this.e.preventDefault();
+                        }
+                    },
+                    stopPropagation: {
+                        value: function stopPropagation() {
+                            this.e.stopPropagation();
+                        }
+                    },
+                    stop: {
+                        value: function stop() {
+                            this.preventDefault();
+                            this.stopPropagation();
+                        }
+                    }
+                });
+
+                return Event;
+            })();
+
+            CODES = {
+                38: "up",
+                39: "right",
+                40: "down",
+                37: "left",
+                16: "shift",
+                17: "control",
+                18: "alt",
+                9: "tab",
+                13: "enter",
+                36: "home",
+                35: "end",
+                33: "pageup",
+                34: "pagedown",
+                45: "insert",
+                46: "delete",
+                27: "escape",
+                32: "space",
+                8: "backspace"
+            };
             nativeTypes = ["unload", "beforeunload", "resize", "DOMContentLoaded", "hashchange", "popstate", "error", "abort", "scroll", "message"];
 
             listeners = (function () {

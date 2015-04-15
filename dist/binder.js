@@ -1,5 +1,5 @@
 System.register(["./nodes", "./utils"], function (_export) {
-    var RootNode, Node, MultipleNode, walker, utils, _createClass, _classCallCheck, binders, Binder;
+    var RootNode, Node, MultipleNode, walker, $utils, _createClass, _classCallCheck, binders, Binder;
 
     return {
         setters: [function (_nodes) {
@@ -8,7 +8,7 @@ System.register(["./nodes", "./utils"], function (_export) {
             MultipleNode = _nodes.MultipleNode;
             walker = _nodes.walker;
         }, function (_utils) {
-            utils = _utils;
+            $utils = _utils;
         }],
         execute: function () {
             "use strict";
@@ -58,7 +58,7 @@ System.register(["./nodes", "./utils"], function (_export) {
                 }, {
                     create: {
                         value: function create(config, element) {
-                            var uid = utils.uid(element);
+                            var uid = $utils.uid(element);
                             if (!(uid in binders)) {
                                 binders[uid] = new Binder(config, element);
                             }
