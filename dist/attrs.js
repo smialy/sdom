@@ -16,15 +16,15 @@ System.register([], function (_export) {
     return {
         setters: [],
         execute: function () {
-            "use strict";
+            'use strict';
 
             ATTRS = {
-                "class": "className",
-                "for": "htmlFor",
-                html: "innerHTML",
-                style: "cssText"
+                'class': 'className',
+                'for': 'htmlFor',
+                html: 'innerHTML',
+                style: 'cssText'
             };
-            ATTRS_BOOL = ["autofocus", "autoplay", "checked", "compact", "controls", "declare", "defaultChecked", "defer", "disabled", "ismap", "loop", "multiple", "noresize", "noshade", "nowrap", "readOnly", "selected"];
+            ATTRS_BOOL = ['autofocus', 'autoplay', 'checked', 'compact', 'controls', 'declare', 'defaultChecked', 'defer', 'disabled', 'ismap', 'loop', 'multiple', 'noresize', 'noshade', 'nowrap', 'readOnly', 'selected'];
             attrs = {
                 sets: function sets(element, attributes) {
                     for (var name in attributes) {
@@ -33,17 +33,17 @@ System.register([], function (_export) {
                 },
                 set: function set(element, name, value) {
                     //trim string
-                    if (typeof value === "string") {
+                    if (typeof value === 'string') {
                         value = value.trim();
                     }
                     switch (name) {
-                        case "id":
+                        case 'id':
                             element.id = value;
                             break;
-                        case "class":
-                            element.className = unique(value.split(" ")).join(" ");
+                        case 'class':
+                            element.className = unique(value.split(' ')).join(' ');
                             break;
-                        case "css":
+                        case 'css':
                             element.style.set(name, value);
                             break;
                         default:
@@ -58,7 +58,7 @@ System.register([], function (_export) {
 
             };
 
-            _export("default", attrs);
+            _export('default', attrs);
         }
     };
 });

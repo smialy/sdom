@@ -10,15 +10,15 @@ System.register([], function (_export) {
     return {
         setters: [],
         execute: function () {
-            "use strict";
+            'use strict';
 
             styles = {
                 set: function set(element, name, value) {
-                    name = name === "float" ? "cssFloat" : camelCase(name);
+                    name = name === 'float' ? 'cssFloat' : camelCase(name);
                     element.style[name] = value;
                 },
                 get: function get(element, name) {
-                    return name = name === "float" ? "cssFloat" : camelCase(name);
+                    return name = name === 'float' ? 'cssFloat' : camelCase(name);
                 },
                 sets: function sets(element, items) {
                     for (var _name in items) {
@@ -27,7 +27,7 @@ System.register([], function (_export) {
                 }
             };
 
-            _export("default", styles);
+            _export('default', styles);
         }
     };
 });

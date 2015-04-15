@@ -1,10 +1,10 @@
-System.register(["./utils"], function (_export) {
-    var utils, _createClass, _classCallCheck, EVENTS_CACHE, Events, Event, CODES, nativeTypes, listeners;
+System.register(['./utils'], function (_export) {
+    var utils, _classCallCheck, _createClass, EVENTS_CACHE, Events, Event, CODES, nativeTypes, listeners;
 
     function getType(type) {
-        if (type === "mousewheel") {
-            if (!utils.isEventSupport("mousewheel")) {
-                type = "DOMMouseScroll";
+        if (type === 'mousewheel') {
+            if (!utils.isEventSupport('mousewheel')) {
+                type = 'DOMMouseScroll';
             }
         }
         return type;
@@ -41,21 +41,21 @@ System.register(["./utils"], function (_export) {
 
     function prepareEvent(api, e) {
         var type = e.type;
-        if (type.indexOf("key") === 0) {
+        if (type.indexOf('key') === 0) {
             var code = e.which || e.keyCode;
             if (CODES[code]) {
                 api.key = CODES[code];
-            } else if (type === "keydown" || type === "keyup") {
+            } else if (type === 'keydown' || type === 'keyup') {
                 if (code > 111 && code < 124) {
-                    api.key = "f" + (code - 111);
+                    api.key = 'f' + (code - 111);
                 } else if (code > 95 && code < 106) {
                     api.key = code - 96;
                 } else {
                     api.key = String.fromCharCode(code).toLowerCase();
                 }
             }
-        } else if (type === "click" || type === "dbclick" || type.indexOf("mouse") === 0 || type === "DOMMouseScroll" || type === "wheel" || type === "contextmenu") {
-            var doc = !document.compatMode || document.compatMode === "CSS1Compat" ? document.html : document.body;
+        } else if (type === 'click' || type === 'dbclick' || type.indexOf('mouse') === 0 || type === 'DOMMouseScroll' || type === 'wheel' || type === 'contextmenu') {
+            var doc = !document.compatMode || document.compatMode === 'CSS1Compat' ? document.html : document.body;
             api.page = {
                 x: e.pageX !== null ? e.pageX : e.clientX + doc.scrollLeft,
                 y: e.pageY !== null ? e.pageY : e.clientY + doc.scrollTop
@@ -65,21 +65,21 @@ System.register(["./utils"], function (_export) {
                 y: e.pageY !== null ? e.pageY - window.pageYOffset : e.clientY
             };
             api.isRight = e.which === 3 || e.button === 2;
-            if (type === "mouseover" || type === "mouseout") {} else if (e.type === "mousewheel" || e.type === "DOMMouseScroll" || e.type === "wheel") {
+            if (type === 'mouseover' || type === 'mouseout') {} else if (e.type === 'mousewheel' || e.type === 'DOMMouseScroll' || e.type === 'wheel') {
                 api.wheel = e.wheelDelta ? e.wheelDelta / 120 : -(e.detail || 0) / 3;
                 if (e.axis) {
                     if (e.axis === e.HORIZONTAL_AXIS) {
-                        api.axis = "horizontal";
+                        api.axis = 'horizontal';
                     } else {
-                        api.axis = "vertical";
+                        api.axis = 'vertical';
                     }
                 } else if (e.wheelDeltaX && e.wheelDeltaX === e.wheelDelta) {
-                    api.axis = "horizontal";
+                    api.axis = 'horizontal';
                 } else {
-                    api.axis = "vertical";
+                    api.axis = 'vertical';
                 }
             }
-        } else if (type.indexOf("touch") === 0 || type.indexOf("gesture") === 0) {
+        } else if (type.indexOf('touch') === 0 || type.indexOf('gesture') === 0) {
             api.touch = {
                 rotation: e.rotation,
                 scale: e.scale,
@@ -106,11 +106,11 @@ System.register(["./utils"], function (_export) {
             utils = _utils;
         }],
         execute: function () {
-            "use strict";
+            'use strict';
 
-            _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+            _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
-            _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+            _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
             EVENTS_CACHE = {};
 
@@ -121,75 +121,73 @@ System.register(["./utils"], function (_export) {
                     this.element = element;
                 }
 
-                _createClass(Events, {
-                    add: {
-                        value: function add(type, callback, bind) {
-                            addEvent(this.element, type, callback, bind);
-                        }
-                    },
-                    addAll: {
-                        value: function addAll(items) {
-                            for (var _name in items) {
-                                addEvent(this.element, _name, items[_name]);
-                            }
-                        }
-                    },
-                    once: {
-                        value: function once(type, callback, bind) {
-                            var handler = addEvent(this.element, type, function (e) {
-                                callback(e);
-                                handler.remove();
-                            }, bind);
-                            return handler;
-                        }
-                    },
-                    remove: {
-                        value: function remove(type, callback, bind) {
-                            removeEvent(this.element, type, callback, bind);
-                        }
-                    },
-                    removeAll: {
-                        value: function removeAll(types) {
-                            var items = [];
-                            var uid = utils.uid(this.element);
-                            if (typeof types === "undefined") {
-                                items = listeners.target(uid);
-                            } else {
-                                if (typeof types === "string") {
-                                    types = types.trim().split(" ").unique();
-                                }
-                                for (var t = 0; t < types.length; t += 1) {
-                                    items.extend(listeners.type(uid, types[t]).findAll());
-                                }
-                            }
-                            for (var i = 0; i < items.length; i += 1) {
-                                removeEvent(this.element, items[i].type, items[i].callback);
-                            }
-                        }
-                    },
-                    dispose: {
-                        value: function dispose() {
-                            this.removeAll();
-                            this.element = null;
-                            delete EVENTS_CACHE[utils.uid(this.element)];
+                _createClass(Events, [{
+                    key: 'add',
+                    value: function add(type, callback, bind) {
+                        addEvent(this.element, type, callback, bind);
+                    }
+                }, {
+                    key: 'addAll',
+                    value: function addAll(items) {
+                        for (var _name in items) {
+                            addEvent(this.element, _name, items[_name]);
                         }
                     }
                 }, {
-                    create: {
-                        value: function create(element) {
-                            var uid = utils.uid(element);
-                            if (!(uid in EVENTS_CACHE)) {
-                                EVENTS_CACHE[uid] = new Events(element);
+                    key: 'once',
+                    value: function once(type, callback, bind) {
+                        var handler = addEvent(this.element, type, function (e) {
+                            callback(e);
+                            handler.remove();
+                        }, bind);
+                        return handler;
+                    }
+                }, {
+                    key: 'remove',
+                    value: function remove(type, callback, bind) {
+                        removeEvent(this.element, type, callback, bind);
+                    }
+                }, {
+                    key: 'removeAll',
+                    value: function removeAll(types) {
+                        var items = [];
+                        var uid = utils.uid(this.element);
+                        if (typeof types === 'undefined') {
+                            items = listeners.target(uid);
+                        } else {
+                            if (typeof types === 'string') {
+                                types = types.trim().split(' ').unique();
                             }
-                            return EVENTS_CACHE[uid];
+                            for (var t = 0; t < types.length; t += 1) {
+                                items.extend(listeners.type(uid, types[t]).findAll());
+                            }
+                        }
+                        for (var i = 0; i < items.length; i += 1) {
+                            removeEvent(this.element, items[i].type, items[i].callback);
                         }
                     }
-                });
+                }, {
+                    key: 'dispose',
+                    value: function dispose() {
+                        this.removeAll();
+                        this.element = null;
+                        delete EVENTS_CACHE[utils.uid(this.element)];
+                    }
+                }], [{
+                    key: 'create',
+                    value: function create(element) {
+                        var uid = utils.uid(element);
+                        if (!(uid in EVENTS_CACHE)) {
+                            EVENTS_CACHE[uid] = new Events(element);
+                        }
+                        return EVENTS_CACHE[uid];
+                    }
+                }]);
 
                 return Events;
             })();
 
-            _export("default", Events);
+            _export('default', Events);
 
             Event = (function () {
                 function Event(e, ctype) {
@@ -214,49 +212,48 @@ System.register(["./utils"], function (_export) {
                     Object.freeze(this);
                 }
 
-                _createClass(Event, {
-                    preventDefault: {
-                        value: function preventDefault() {
-                            this.e.preventDefault();
-                        }
-                    },
-                    stopPropagation: {
-                        value: function stopPropagation() {
-                            this.e.stopPropagation();
-                        }
-                    },
-                    stop: {
-                        value: function stop() {
-                            this.preventDefault();
-                            this.stopPropagation();
-                        }
+                _createClass(Event, [{
+                    key: 'preventDefault',
+                    value: function preventDefault() {
+                        this.e.preventDefault();
                     }
-                });
+                }, {
+                    key: 'stopPropagation',
+                    value: function stopPropagation() {
+                        this.e.stopPropagation();
+                    }
+                }, {
+                    key: 'stop',
+                    value: function stop() {
+                        this.preventDefault();
+                        this.stopPropagation();
+                    }
+                }]);
 
                 return Event;
             })();
 
             CODES = {
-                38: "up",
-                39: "right",
-                40: "down",
-                37: "left",
-                16: "shift",
-                17: "control",
-                18: "alt",
-                9: "tab",
-                13: "enter",
-                36: "home",
-                35: "end",
-                33: "pageup",
-                34: "pagedown",
-                45: "insert",
-                46: "delete",
-                27: "escape",
-                32: "space",
-                8: "backspace"
+                38: 'up',
+                39: 'right',
+                40: 'down',
+                37: 'left',
+                16: 'shift',
+                17: 'control',
+                18: 'alt',
+                9: 'tab',
+                13: 'enter',
+                36: 'home',
+                35: 'end',
+                33: 'pageup',
+                34: 'pagedown',
+                45: 'insert',
+                46: 'delete',
+                27: 'escape',
+                32: 'space',
+                8: 'backspace'
             };
-            nativeTypes = ["unload", "beforeunload", "resize", "DOMContentLoaded", "hashchange", "popstate", "error", "abort", "scroll", "message"];
+            nativeTypes = ['unload', 'beforeunload', 'resize', 'DOMContentLoaded', 'hashchange', 'popstate', 'error', 'abort', 'scroll', 'message'];
 
             listeners = (function () {
 
@@ -273,17 +270,17 @@ System.register(["./utils"], function (_export) {
                         return buff;
                     },
                     type: (function (_type) {
-                        var _typeWrapper = function type(_x, _x2) {
+                        function type(_x, _x2) {
                             return _type.apply(this, arguments);
-                        };
+                        }
 
-                        _typeWrapper.toString = function () {
+                        type.toString = function () {
                             return _type.toString();
                         };
 
-                        return _typeWrapper;
+                        return type;
                     })(function (uid, type) {
-                        var sid = "_" + uid + "_" + type;
+                        var sid = '_' + uid + '_' + type;
                         if (!(sid in $group)) {
                             $group[sid] = [];
                         }
