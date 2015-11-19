@@ -4,7 +4,7 @@ import attrs from './attrs';
 import cookies from './cookies';
 import uid from './utils';
 import Binder from './binder';
-import Events from './events';
+import {addEvent, removeEvent, onceEvent, createEvent} from './events';
 
 export default function dom(element, attrs, context){
     return create(element, attrs, context)
@@ -18,7 +18,7 @@ dom.cookies = cookies;
 dom.binder = function(config, element){
     return Binder.create(config, element);
 };
-dom.events = function(element){
-  return Events.create(element);  
-};
-
+dom.on = addEvent;
+dom.off = removeEvent;
+dom.once = onceEvent;
+dom.events = element => createEvent

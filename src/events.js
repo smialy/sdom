@@ -2,16 +2,50 @@ import * as utils from './utils';
 
 var EVENTS_CACHE = {};
 
-export default class Events{
 
-    static create(element){
-        var uid = utils.uid(element);
-        if(!(uid in EVENTS_CACHE)){
-            EVENTS_CACHE[uid] = new Events(element);
+export function addEvent(target, type, callback, bind) {
+    bind = bind || null;
+
+    var listeners = removeEvent(target, type, callback);
+    var handler = nativeTypes.indexOf(type) !== -1 ? () => callback.call(bind) : (e) => {
+        callback.call(bind, new Event(e, type));
+    };
+
+    target.addEventListener(getType(type), handler, false);
+    listeners.add(type, callback, handler, bind);
+
+    return {
+        remove: function() {
+            removeEvent(target, type, callback);
         }
-        return EVENTS_CACHE[uid];
-    }
+    };
+}
 
+export function onceEvent(element, type, callback, bind) {
+    let handler = addEvent(element, type, function(e) {
+        callback(e);
+        handler.remove();
+    }, bind);
+    return handler;
+}
+
+export function removeEvent(target, type, callback) {
+    var items = listeners.type(utils.uid(target), type);
+    var listener = items.remove(callback);
+    if (listener !== null) {
+        target.removeEventListener(getType(type), listener.handler, false);
+    }
+    return items;
+}
+export function createEvent(element){
+    var uid = utils.uid(element);
+    if(!(uid in EVENTS_CACHE)){
+        EVENTS_CACHE[uid] = new Events(element);
+    }
+    return EVENTS_CACHE[uid];
+}
+
+class Events{
     constructor(element){
         this.element = element;
     }
@@ -66,7 +100,7 @@ export default class Events{
 
 
 class Event{
-    
+
     constructor(e, ctype){
         var target = e.target;
         while (target && target.nodeType === 3) {
@@ -94,7 +128,7 @@ class Event{
     stopPropagation(){
         this.e.stopPropagation();
     }
-    
+
     stop() {
         this.preventDefault();
         this.stopPropagation();
@@ -225,7 +259,7 @@ function prepareEvent(api, e) {
             };
         }
     }
-    
+
 }
 
 var listeners = (function() {
