@@ -1,11 +1,10 @@
 
 var user = (function(){
-    var dummy;
     return {
         setup: function(){
             var title = document.createElement('h1');
             document.body.appendChild(title);
-            
+
             var user = document.createElement('div');
             user.classList.add('user');
             document.body.appendChild(user);
@@ -13,11 +12,11 @@ var user = (function(){
             var name = document.createElement('div');
             name.classList.add('name');
             user.appendChild(name);
-            
+
             var role = document.createElement('div');
             role.classList.add('role');
             user.appendChild(role);
-            
+
             document.body.appendChild(user);
             return {
                 title: title,

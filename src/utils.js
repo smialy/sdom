@@ -1,29 +1,34 @@
 
-var UID = 0;
 var eventCache = {};
 
-export function uid(element) {
-    return element.$$sdomuid || (element.$$sdomuid = UID += 1);
-}
 
 export function isEventSupport(name) {
-    var el = document.createElement('div');
-    if (name in eventCache) {
+    if (!eventCache.hasOwnProperty(name)) {
+        eventCache[name] = checkEvent(name);
+    }
+    return eventCache[name];
+}
+
+function checkEvent(name){
+    let el = document.createElement('div');
+    const eventName = 'on' + name.toLowerCase();
+    if (eventName in el) {
+        el = null;
         return true;
     }
-    var el = window;
-    var ename = 'on' + name.toLowerCase();
-    var isSupport = false;
-    if (ename in el) {
+    el.setAttribute(eventName, 'return;');
+    const isSupport = typeof el[eventName] === 'function';
+    el.removeAttribute(eventName);
+    el = null;
 
-        isSupport = true;
-    } else {
-        if (el.setAttribute) {
-            el.setAttribute(ename, 'return;');
-            isSupport = typeof el[ename] === 'function';
-            el.removeAttribute(ename);
+    return isSupport;
+}
+
+export function fixMousewheel(name) {
+    if (name === 'mousewheel') {
+        if (!utils.isEventSupport('mousewheel')) {
+            name = 'DOMMouseScroll';
         }
     }
-    eventCache[name] = isSupport;
-    return isSupport;
+    return name;
 }

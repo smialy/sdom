@@ -1,78 +1,79 @@
-import cookies from '../src/cookies'; 
+import Cookies from '../src/cookies';
 
-module('cookie()', {
-    setup: function() {
+
+QUnit.module('cookie()', {
+    beforeEach: assert => {
         $document.reset();
-        cookies.document = $document;
+        Cookies.document = $document;
     },
-    teardown: function() {
-        cookies.document = document;
+    afterEach: assert => {
+        Cookies.document = document;
     }
 });
 
-test('cookies.set()', function() {
-    cookies.set('test', 'value');
-    equal($document.cookie, 'test=value; path=/');
+QUnit.test('cookies.set()', assert => {
+    Cookies.set('test', 'value');
+    assert.equal($document.cookie, 'test=value; path=/');
 });
 
-test('cookies.set() - empty value', function() {
-    cookies.set('name');
-    equal($document.cookie, 'name=; path=/');
+QUnit.test('cookies.set() - empty value', assert => {
+    Cookies.set('name');
+    assert.equal($document.cookie, 'name=; path=/');
 });
 
-test('cookies.get() - empty value', function() {
-    equal(cookies.get(), null);
+QUnit.test('cookies.get() - empty value', assert => {
+    assert.equal(Cookies.get(), null);
 });
 
-test('cookies.get()', function() {
+QUnit.test('cookies.get()', assert => {
     $document.cookie = 'test=value';
-    equal(cookies.get('test'), 'value');
+    assert.equal(Cookies.get('test'), 'value');
 });
 
-test('cookies.remove()', function() {
+QUnit.test('cookies.remove()', assert => {
     document.cookie = 'test=value';
-    cookies.remove();
-    ok($document.$cookie.$expires.getTime() < new Date().getTime());
+    Cookies.remove('test');
+    assert.ok($document.$cookie.$expires.getTime() < new Date().getTime());
 });
 
-test('cookie path', function() {
-    cookies.set('name', 'path', {
+QUnit.test('cookie path', assert => {
+    Cookies.set('name', 'path', {
         path: '/test'
     });
-    equal($document.cookie, 'name=path; path=/test');
+    assert.equal($document.cookie, 'name=path; path=/test');
 });
 
-test('cookie secure', function() {
-    cookies.set('name', '', {
+QUnit.test('cookie secure', assert => {
+    Cookies.set('name', '', {
         secure: true
     });
-    equal($document.cookie, 'name=; path=/; secure');
+    assert.equal($document.cookie, 'name=; path=/; secure');
 });
 
-test('cookie domain', function() {
-    cookies.set('name', 'secure', {
+QUnit.test('cookie domain', assert => {
+    Cookies.set('name', 'secure', {
         domain: 'domain.pl'
     });
-    equal($document.cookie, 'name=secure; domain=domain.pl; path=/');
+    assert.equal($document.cookie, 'name=secure; domain=domain.pl; path=/');
 });
 
-test('cookie default encode', function() {
-    cookies.set('name', '+');
-    equal($document.cookie, 'name=%2B; path=/');
+QUnit.test('cookie default encode', assert => {
+    Cookies.set('name', '+');
+    assert.equal($document.cookie, 'name=%2B; path=/');
 });
 
-test('cookie disable encode', function() {
-    cookies.set('name', '+', {
+QUnit.test('cookie disable encode', assert => {
+    Cookies.set('name', '+', {
         encode: false
     });
-    equal($document.cookie, 'name=+; path=/');
+    assert.equal($document.cookie, 'name=+; path=/');
 });
 
 
-var cookieHelper = (function() {
+var cookieHelper = (assert => {
     var keys = ['path', 'expires', 'domain', 'secure'];
-    var makeGroup = function(buff) {
 
+    function makeGroup(buff) {
         return function(name, value) {
             switch (name) {
                 case 'secure':
@@ -84,12 +85,11 @@ var cookieHelper = (function() {
                     buff[name] = value;
                     break;
                 default:
-                    buff['name'] = name;
-                    buff['value'] = value || '';
+                    buff.name = name;
+                    buff.value = value || '';
                     break;
             }
-        };
-
+        }
     };
     return {
         parse: function(cookie) {
@@ -105,7 +105,6 @@ var cookieHelper = (function() {
                 } else {
                     group(part);
                 }
-
             }
             return buff;
         }
@@ -113,18 +112,17 @@ var cookieHelper = (function() {
 })();
 
 
-var $document = Object.create({}, {
-    cookie: {
-        set: function(value) {
-            this.$cookie = cookieHelper.parse(value);
-            this._value = value;
-        },
-        get: function() {
-            return this._value;
-        }
+var $document = {
+
+    set cookie(value) {
+        this.$cookie = cookieHelper.parse(value);
+        this._value = value;
+    },
+    get cookie(){
+        return this._value;
     }
-});
-$document.reset = function() {
+};
+$document.reset = function(){
     this.$cookie = {};
     this._value = '';
 };

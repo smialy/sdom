@@ -1,34 +1,19 @@
-// Karma configuration
-
 module.exports = function(config) {
   config.set({
 
 //    basePath: '',
 
-    frameworks: ['jspm', 'qunit'],
-
-    //es6 modules
-    jspm: {
-          loadFiles: ['test/**/*.js'],
-          serveFiles: ['src/**/*.js','test/**/*.js'],
-          config:{}
-    },
-  
-    //older browser don't have require elements (es6)
-    files: ['vendor/*.js'],
-    
+    frameworks: ['qunit'],
+    files: ['./test/*.js'],
     preprocessors: {
-      'test/**/*.js': ['babel'],
-      'src/**/*.js': ['babel']
+      'test/**/*.js': ['rollup'],
+      'src/**/*.js': ['rollup']
     },
-    'babelPreprocessor': {
-      options: {
-        sourceMap: 'inline',
-        modules: 'system',
-        moduleIds: false
-      }
+    rollupPreprocessor: {
+      format: 'iife',
+      moduleName: 'dom',
+      sourceMap: 'inline'
     },
-
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress'],
 
@@ -43,7 +28,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_WARN,
+    logLevel: config.LOG_DEBUG,
 
 
     // enable / disable watching file and executing tests whenever any file changes
@@ -52,7 +37,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    
+
     browsers: ['Chrome', 'Firefox'],
 
     // Continuous Integration mode

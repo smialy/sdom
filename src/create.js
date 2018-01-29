@@ -1,4 +1,4 @@
-import attrs from './attrs';
+import Attrs from './attrs';
 
 
 //html tag name finder
@@ -9,17 +9,17 @@ export default function create(name, attributes, context) {
     if (context === undefined || typeof context.createElement !== 'function') {
         context = document;
     }
-    var element = null;
+    let element = null;
     if (typeof name === 'string') {
         name = name.trim();
         if (name.length > 1) {
             if (name.charAt(0) === '<' && name.charAt(name.length - 1) === '>') {
                 if (name.length > 2) {
-                    var m = TAG_RE.exec(name);
+                    let m = TAG_RE.exec(name);
                     if (m) {
                         element = context.createElement(m[1]);
                     } else {
-                        var fragment = context.createElement('div');
+                        let fragment = context.createElement('div');
                         fragment.innerHTML = name;
                         element = fragment.firstChild;
                     }
@@ -29,7 +29,7 @@ export default function create(name, attributes, context) {
             }
             if (element !== null) {
                 if (attributes) {
-                    attrs.sets(element, attributes);
+                    Attrs.sets(element, attributes);
                 }
             }
         }

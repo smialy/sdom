@@ -1,43 +1,19 @@
 {
   "name": "sjs-dom",
-  "version": "0.3.0",
-  "description": "sdom - Dom Helper",
-  "keywords": [
-    "www"
-  ],
-  "homepage": "",
+  "version": "1.0.0",
+  "description": "sdom - Dom Helpers",
   "license": "MIT",
-  "author": "smialy",
   "repository": {
     "type": "git",
     "url": "http://github.com/smialy/sdom"
   },
   "devDependencies": {
-    "gulp": "^3.8.11",
-    "gulp-babel": "^5.1.0",
-    "gulp-bump": "^0.3.0",
-    "gulp-changed": "^1.2.1",
-    "gulp-jshint": "^1.10.0",
-    "gulp-plumber": "^1.0.0",
-    "gulp-sourcemaps": "^1.5.1",
-    "gulp-watch": "^4.2.4",
-    "jshint-stylish": "^1.0.1",
-    "del": "^1.1.1",
-    "run-sequence": "^1.0.2",
-    "vinyl-paths": "^1.0.0",
-    "karma": "^0.12.31",
-    "karma-babel-preprocessor": "^5.0.1",
-    "karma-chrome-launcher": "^0.1.7",
-    "karma-firefox-launcher": "^0.1.4",
-    "karma-phantomjs-launcher": "^0.1.4",
-    "karma-qunit": "^0.1.4",
-    "karma-jspm": "^1.1.4"
-  },
-  "jspm": {
-    "main": "index",
-    "format": "register",
-    "directories": {
-      "lib": "dist"
-    }
+    "karma": "^2.0.0",
+    "qunitjs": "^2.4.1",
+    "rollup": "^0.55.1",
+    "karma-qunit": "^1.2.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-rollup-preprocessor": "^5.1.1"
   }
 }

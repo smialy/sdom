@@ -4,16 +4,35 @@ const ATTRS = {
     'html': 'innerHTML',
     'style': 'cssText'
 };
-const ATTRS_BOOL = ["autofocus", "autoplay", "checked", "compact", "controls", "declare", "defaultChecked", "defer", "disabled", "ismap", "loop", "multiple", "noresize", "noshade", "nowrap", "readOnly", "selected"];
+
+const ATTRS_BOOL = [
+    'autofocus',
+    'autoplay',
+    'checked',
+    'compact',
+    'controls',
+    'declare',
+    'defaultChecked',
+    'defer',
+    'disabled',
+    'ismap',
+    'loop',
+    'multiple',
+    'noresize',
+    'noshade',
+    'nowrap',
+    'readOnly',
+    'selected'
+];
 
 
-var attrs = {
-    sets: function(element, attributes) {
-        for (var name in attributes) {
-            attrs.set(element, name, attributes[name]);
+export default class Attrs{
+    static sets(element, attributes) {
+        for (let name of Object.keys(attributes)) {
+            Attrs.set(element, name, attributes[name]);
         }
-    },
-    set: function(element, name, value) {
+    }
+    static set(element, name, value) {
         //trim string
         if (typeof value === 'string') {
             value = value.trim();
@@ -23,10 +42,14 @@ var attrs = {
                 element.id = value;
                 break;
             case 'class':
-                element.className = unique(value.split(' ')).join(' ');
+                for(let name of value.split(' ')){
+                    if(name){
+                        element.classList.add(name);
+                    }
+                }
                 break;
             case 'css':
-                element.style.set(name, value);
+                element.style[name] = value;
                 break;
             default:
                 if (name in ATTRS) {
@@ -34,22 +57,8 @@ var attrs = {
                 } else if (ATTRS_BOOL.indexOf(name) !== -1) {
                     value = !!value;
                 }
+                element[name] = value;
         }
-        element[name] = value;
     }
 
 };
-
-function unique(tab){
-    var tmp = [],
-        l, item;
-    for (var i = 0, j = tab.length; i < j;) {
-        item = tab[i++];
-        if (tmp.indexOf(item) === -1) {
-            tmp.push(item);
-        }
-    }
-    return tmp;
-        
-}
-export default attrs;

@@ -1,28 +1,30 @@
 import Binder from '../src/binder';
 import {user} from './helper';
 
-test('imports', function(){
-    ok(typeof Binder === 'function'); 
-});
-function create(options, dom){
+function create(options, dom) {
     return new Binder(options, dom);
 }
-var handler; 
-module("sdom.binder(config, element)", {
-    setup: function() {
-        handler = user.setup();
+
+QUnit.module("sdom.binder(config, element)", {
+    beforeEach: function() {
+        this.handler = user.setup();
     },
-    teardown: function() {
+    afterEach: function() {
         user.teardown();
-        handler = null;
+        this.handler = null;
     }
 });
-test('empty', function(){
-    var sdom = create({}, document.body);
-    ok(typeof sdom.update === 'function');
+
+QUnit.test('imports', function(assert) {
+    assert.ok(typeof Binder === 'function');
 });
 
-test('update plain', function(){
+QUnit.test('empty', function(assert) {
+    var sdom = create({}, document.body);
+    assert.ok(typeof sdom.update === 'function');
+});
+
+QUnit.test('update plain', function(assert) {
     var sdom = create({
         title:'h1@text',
         user:{
@@ -33,12 +35,12 @@ test('update plain', function(){
     sdom.update('title','Title');
     sdom.update('user.name','User name');
     sdom.update('user.role','User role');
-    equal(handler.title.textContent, 'Title');
-    equal(handler.name.textContent, 'User name');
-    equal(handler.role.textContent, 'User role');
+    assert.equal(this.handler.title.textContent, 'Title');
+    assert.equal(this.handler.name.textContent, 'User name');
+    assert.equal(this.handler.role.textContent, 'User role');
 });
 
-test('update plain - default binder (text)', function(){
+QUnit.test('update plain - default binder (text)', function(assert) {
     var sdom = create({
         title:'h1',
         user:{
@@ -49,12 +51,12 @@ test('update plain - default binder (text)', function(){
     sdom.update('title','Title');
     sdom.update('user.name','User name');
     sdom.update('user.role','User role');
-    equal(handler.title.textContent, 'Title');
-    equal(handler.name.textContent, 'User name');
-    equal(handler.role.textContent, 'User role');
+    assert.equal(this.handler.title.textContent, 'Title');
+    assert.equal(this.handler.name.textContent, 'User name');
+    assert.equal(this.handler.role.textContent, 'User role');
 });
 
-test('update using object', function(){
+QUnit.test('update using object', function(assert) {
     var sdom = create({
         title:'h1',
         user:{
@@ -69,73 +71,73 @@ test('update using object', function(){
             role:'User role'
         }
     });
-    equal(handler.title.textContent, 'Title');
-    equal(handler.name.textContent, 'User name');
-    equal(handler.role.textContent, 'User role');
+    assert.equal(this.handler.title.textContent, 'Title');
+    assert.equal(this.handler.name.textContent, 'User name');
+    assert.equal(this.handler.role.textContent, 'User role');
 });
 
-test('element[class]', function(){
+QUnit.test('element[class]', function(assert) {
     var sdom = create({
         title:'h1@text'
     }, document.body);
     sdom.update('title','test-<em>class</em>');
-    equal(handler.title.innerHTML, 'test-&lt;em&gt;class&lt;/em&gt;');
+    assert.equal(this.handler.title.innerHTML, 'test-&lt;em&gt;class&lt;/em&gt;');
 });
 
-test('element[class]', function(){
+QUnit.test('element[class]', function(assert) {
     var sdom = create({
         title:'h1@class'
     }, document.body);
     sdom.update('title','test-class');
-    ok(handler.title.classList.contains('test-class'));
+    assert.ok(this.handler.title.classList.contains('test-class'));
 });
 
-test('element.dataset', function(){
+QUnit.test('element.dataset', function(assert) {
     var sdom = create({
         title:'h1@dataset:test'
     }, document.body);
     sdom.update('title','some-data');
-    equal(handler.title.dataset.test, 'some-data');
+    assert.equal(this.handler.title.dataset.test, 'some-data');
 });
 
-test('update incorect element.dataset', function(){
-    throws(function(){
+QUnit.test('update incorect element.dataset', function(assert) {
+    assert.throws(function(assert) {
         var sdom = create({
             title:'h1@dataset'
         }, document.body);
     },'dataset without name parameter');
 
-    throws(function(){
+    assert.throws(function(assert) {
         var sdom = create({
             title:'h1@dataset:'
         }, document.body);
     },'dataset with empty name parameter');
 });
 
-test('update element[attribute]', function(){
+QUnit.test('update element[attribute]', function(assert) {
     var sdom = create({
         title:'h1@attr:title'
     }, document.body);
     sdom.update('title','Some title');
-    equal(handler.title.title, 'Some title');
+    assert.equal(this.handler.title.title, 'Some title');
 });
 
-test('update element@html', function(){
+QUnit.test('update element@html', function(assert) {
     var sdom = create({
         title:'h1@html'
     }, document.body);
     sdom.update('title','Some<em>title</em>');
-    equal(handler.title.innerHTML, 'Some<em>title</em>');
+    assert.equal(this.handler.title.innerHTML, 'Some<em>title</em>');
 });
 
-test('update incorect element[attribute]', function(){
-    throws(function(){
+QUnit.test('update incorect element[attribute]', function(assert) {
+    assert.throws(function(assert) {
         var sdom = create({
             title:'h1@attr'
         }, document.body);
     },'attribute without name parameter');
 
-    throws(function(){
+    assert.throws(function(assert) {
         var sdom = create({
             title:'h1@attr:'
         }, document.body);

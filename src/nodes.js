@@ -1,40 +1,38 @@
 export class Node{
     constructor(type, name, element, options=null){
-      
         this.type = type;
         this.name = name;
         this.element = element;
-        this._childs = [];
+        this._children = [];
     }
-    
+
     addChild(node){
-        this._childs.push(node);
+        this._children.push(node);
     }
 
     update(data){
-        this._childs.forEach(node => {
+        for(let node of this._children){
             if(typeof data[node.name] !== 'undefined'){
                 node.update(data[node.name]);
             }
-        });
+        }
     }
-    
+
     find(name){
-      for(var i = 0; i<this._childs.length;i+=1){
-         if(this._childs[i].name === name){
-            return this._childs[i];
-         }
-      }
-      return null;
+        for(let node of this._children){
+            if(node.name === name){
+                return node;
+            }
+        }
+        return null;
     }
 
     dispose(){
-        var childs = this._childs;
-        for(var i = 0; i<childs.length;i+=1){
-            childs[i].dispose();
+        for(let node of this._children){
+            node.dispose();
         }
         this.element = null;
-        this._childs = [];
+        this._children = null;
     }
 }
 
@@ -58,7 +56,7 @@ class HtmlNode extends LeafNode{
         super('html', name, element);
     }
     update(value){
-        this.element.innerHTML = value;   
+        this.element.innerHTML = value;
     }
 }
 
@@ -92,8 +90,7 @@ class ClassNode extends LeafNode{
         super('class', name, element);
         this.value = value;
     }
-   
-   update(value){
+    update(value){
         if(this.value){
             if(value){
                 this.element.classList.add(this.value);
@@ -118,20 +115,20 @@ export class RootNode extends Node{
 
 export class MultipleNode extends Node{
     update(data){
-        this._childs.forEach(node => {
+        this._children.forEach(node => {
             node.update(data);
         });
-    }   
+    }
 }
 
 export function walker(parent, config, element){
-    var node;
+    let node;
     Object.keys(config).forEach(name => {
-        if(typeof config[name] === 'string'){ 
+        if(typeof config[name] === 'string'){
             node = nodeFactory(name, element, config[name]);
             parent.addChild(node);
         }else if(Array.isArray(config[name])){
-            var multiple = new MultipleNode('multiple', name);
+            let multiple = new MultipleNode('multiple', name);
             config[name].forEach(sub => {
                 node = nodeFactory(name, element, sub);
                 multiple.addChild(node);
@@ -146,11 +143,11 @@ export function walker(parent, config, element){
 }
 
 function parseConfig(text){
-   var [selector, rest] = text.split('@');
+   let [selector, rest] = text.split('@');
    if(!rest){
         rest = 'text';
    }
-   var [type, options] = rest.split(':');
+   let [type, options] = rest.split(':');
 
    return {
         selector: selector,
@@ -183,9 +180,8 @@ function nodeFactory(name, element, config){
         config = parseConfig(config);
     }
     if(NODES[config.type]){
-        var dom = element.querySelector(config.selector);
+        let dom = element.querySelector(config.selector);
         return NODES[config.type](name, dom, config.options);
     }
     return new TextNode('name', element);
-
 }

@@ -1,4 +1,4 @@
-var styles = {
+export default {
     set: function(element, name, value) {
         name = name === 'float' ? 'cssFloat' : camelCase(name);
         element.style[name] = value;
@@ -18,5 +18,3 @@ function camelCase(txt){
         return char.toUpperCase();
     });
 }
-
-export default styles;
